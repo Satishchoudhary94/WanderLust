@@ -24,7 +24,7 @@ app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.get('/', (req, res) => {
-  res.send('Hello, World!');
+  res.send('Hello, World!');  
 });
 
 //index route for listings

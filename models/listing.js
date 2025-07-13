@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const listingSchema = new Schema({
@@ -7,23 +7,24 @@ const listingSchema = new Schema({
     required: true,
   },
   description: String,
-  price: Number,
   image: {
-    filename: String,
     url: {
       type: String,
-      default:
-        "https://unsplash.com/photos/a-large-swimming-pool-surrounded-by-palm-trees-_pPHgeHz1uk",
+      default: "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
       set: (v) =>
-        v ===
-        "https://unsplash.com/photos/a-large-swimming-pool-surrounded-by-palm-trees-_pPHgeHz1uk"
-          ? "default link"
+        v === ""
+          ? "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
           : v,
     },
+    filename: {
+      type: String,
+      default: "defaultImage"
+    }
   },
+  price: Number,
   location: String,
   country: String,
 });
 
-const Listing = mongoose.model('Listing', listingSchema);
+const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing;
