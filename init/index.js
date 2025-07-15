@@ -14,6 +14,8 @@ async function main() {
 const seedDatabase = async () => {
  try {
    await Listing.deleteMany({});
+    initData.data = initData.data.map((obj) => ({ ...obj, owner: '68766fef6dae81a4a9a5d636' })); // Replace with actual user ID
+   // Insert the initial data into the database
    await Listing.insertMany(initData.data);
    console.log("Database seeded successfully!");
  } catch (err) {
