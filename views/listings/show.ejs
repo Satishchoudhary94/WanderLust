@@ -1,19 +1,16 @@
 <% layout("layouts/boilerplate") %>
-<div class="container mt-3">  <!-- Reduced top margin from mt-5 to mt-3 -->
+<div class="container mt-3">
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
+      <h3 class="mb-4 fw-semibold"><%= listing.title %></h3>
 
-      <h3 class="mb-4 fw-semibold">Listing Details</h3>
-
-      <div class="card shadow rounded-4">
-        <!-- Image -->
+      <!-- Listing Card -->
+      <div class="card shadow rounded-4 listing-card">
         <div class="overflow-hidden rounded-top-4">
           <img src="<%= listing.image.url %>" class="w-100" alt="listing image" style="height: 300px; object-fit: cover;">
         </div>
 
-        <!-- Card Body -->
         <div class="card-body px-4 py-3">
-          <h5 class="fw-semibold mb-1"><%= listing.title %></h5>
           <p class="text-muted mb-2"><%= listing.description %></p>
           <p class="fw-semibold mb-1">&#8377;<%= listing.price.toLocaleString("en-IN") %></p>
           <p class="mb-1"><%= listing.location %></p>
@@ -25,6 +22,45 @@
               <button type="submit" class="btn btn-dark">Delete</button>
             </form>
           </div>
+        </div>
+      </div>
+
+      <!-- ⭐ Review Form -->
+      <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Leave a Review</h5>
+          <form method="POST" action="/listings/<%= listing._id %>/reviews" novalidate class="needs-validation">
+            <div class="mb-3">
+              <label for="rating" class="form-label">Rating (1 to 5)</label>
+              <input type="range" class="form-range" min="1" max="5" id="rating" name="review[rating]">
+            </div>
+            <div class="mb-3">
+              <label for="comment" class="form-label">Comment</label>
+              <textarea class="form-control" name="review[comment]" id="comment" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Submit Review</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ⭐ All Reviews -->
+      <div class="mt-4">
+        <h5 class="mb-3">All Reviews</h5>
+        <div class="row">
+          <% for (let review of listing.reviews) { %>
+            <div class="col-md-6 mb-3 ">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Satish</h6> <!-- Static name for now -->
+                  <p class="card-text"><strong>Comment:</strong> <%= review.comment %></p>
+                  <p class="card-text"><strong>Rating:</strong> <%= review.rating %> ⭐</p>
+                </div>
+                <form class= "mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                  <button type="submit" class="btn btn-sm btn-dark">Delete</button>
+                </form>
+              </div>
+            </div>
+          <% } %>
         </div>
       </div>
 
