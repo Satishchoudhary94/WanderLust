@@ -19,6 +19,8 @@ const validateListing = (req, res, next) => {
   next();
 };
 
+
+
 // Route to show all listings and to create a new listing
 router
   .route('/')
