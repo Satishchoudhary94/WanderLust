@@ -9,43 +9,29 @@ const multer = require('multer');
 const { cloudinary, storage } = require('../cloudConfig');
 const upload = multer({ storage });
 
-// Validation middleware for listings
+// Validation middleware
 const validateListing = (req, res, next) => {
   const { error } = listingSchema.validate(req.body);
   if (error) {
-    const msg = error.details.map(el => el.message).join(',');
-    throw new ExpressError(msg, 400);
+    throw new ExpressError(error.details[0].message, 400);
   }
   next();
 };
 
-
-
-// Route to show all listings and to create a new listing
+// Route for index and creating new listings
 router
   .route('/')
   .get(wrapAsync(listingsController.index)) // Show all listings
-  .post(
-    isLoggedIn,
-    upload.single('listing[image]'), // Upload image to cloudinary
-    validateListing,
-    wrapAsync(listingsController.create)
-  );
+  .post(isLoggedIn, validateListing, upload.single("listing[image]"), wrapAsync(listingsController.create)); // Create new listing
 
-// Form to create a new listing
+// Form to create a new listing (should be before :id to avoid conflict)
 router.get('/new', isLoggedIn, listingsController.renderNewForm);
 
-// Routes for specific listing by ID
+// Routes for specific listing operations
 router
   .route('/:id')
-  .get(wrapAsync(listingsController.show)) // Show listing detail
-  .put(
-    isLoggedIn,
-    isOwner,
-    upload.single('listing[image]'), // Update image
-    validateListing,
-    wrapAsync(listingsController.update)
-  )
+  .get(wrapAsync(listingsController.show)) // Show a specific listing
+  .put(isLoggedIn, isOwner, upload.single("listing[image]"), validateListing, wrapAsync(listingsController.update)) // ✅ Added image upload
   .delete(isLoggedIn, isOwner, wrapAsync(listingsController.destroy)); // Delete listing
 
 // Form to edit a listing
