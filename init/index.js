@@ -1,10 +1,10 @@
-require('dotenv').config(); // Ensure environment variables are loaded
+require('dotenv').config();
 
 const mongoose = require('mongoose');
 const initData = require('./data.js');
 const Listing = require('../models/listing.js');
 
-const MONGO_URI = process.env.ATLAS_URL;
+const MONGO_URI = 'mongodb+srv://schoudhary3741:7y7EW1oIqPGKRpKk@cluster0.d6ptcxb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0L';
 
 main().then(() => console.log('✅ Connected to MongoDB Atlas'))
   .catch(err => console.error('❌ Connection Error:', err));
@@ -21,7 +21,11 @@ const seedDatabase = async () => {
     await Listing.deleteMany({});
     initData.data = initData.data.map((obj) => ({
       ...obj,
-      owner: '68766fef6dae81a4a9a5d636' // Use your actual user ObjectId here
+      owner: '687b754ce209210aa6d36231',
+      geometry: obj.geometry || {
+        type: 'Point',
+        coordinates: [77.2090, 28.6139]
+      }
     }));
     await Listing.insertMany(initData.data);
     console.log('✅ Database seeded successfully!');

@@ -1,177 +1,275 @@
 <% layout("layouts/boilerplate") %>
 
-<body class="d-flex flex-column min-vh-100">
-
-  <!-- Icon Scroll Filter -->
-  <div class="scroll-wrapper d-flex overflow-auto px-4 gap-4 position-relative" id="filterScroll">
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-mountain fa-lg mb-1"></i><br><small>Views</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-city fa-lg mb-1"></i><br><small>Iconic cities</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-water fa-lg mb-1"></i><br><small>Surfing</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-swimming-pool fa-lg mb-1"></i><br><small>Pools</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-umbrella-beach fa-lg mb-1"></i><br><small>Beach</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-home fa-lg mb-1"></i><br><small>Cabins</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-fire fa-lg mb-1"></i><br><small>Trending</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-filter fa-lg mb-1"></i><br><small>Filters</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-ice-cream fa-lg mb-1"></i><br><small>Unique</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-tree fa-lg mb-1"></i><br><small>Forest</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-snowflake fa-lg mb-1"></i><br><small>Winter</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-moon fa-lg mb-1"></i><br><small>Nightlife</small>
-    </div>
-    <div class="text-center flex-shrink-0 icon-item">
-      <i class="fas fa-paw fa-lg mb-1"></i><br><small>Pet-friendly</small>
-    </div>
-
-    <!-- Custom Toggle Switch -->
-    <label class="custom-toggle-container ms-4 flex-shrink-0">
-      <span class="custom-label">Display total before taxes</span>
-      <input type="checkbox" id="toggleTax">
-      <span class="custom-toggle-switch"></span>
-    </label>
-  </div>
-
-  <!-- Listings Grid -->
-  <div class="container mt-4">
-    <div class="row row-cols-lg-3 row-cols-md-3 row-cols-1 g-4">
-      <% for (let listing of listings) { %>
-        <div class="col">
-          <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
-            <div class="card h-100 shadow-sm listing-card">
-              <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem; object-fit: cover;">
-              <div class="card-body">
-                <p class="card-text mb-1">
-                  <strong><%= listing.title %></strong><br>
-                  &#8377;<%= listing.price?.toLocaleString("en-IN") %>/night
-                  <span class="tax-info"> &nbsp;&nbsp;+18% GST</span>
-                </p>
-              </div>
-            </div>
-          </a>
-        </div>
-      <% } %>
-    </div>
-  </div>
-
-  <!-- Font Awesome -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-  <!-- Custom Styles -->
-  <style>
-    .scroll-wrapper::-webkit-scrollbar {
-      display: none;
+<style>
+    :root {
+        --brand-color: #fe424d;
     }
 
-    .scroll-wrapper {
-      scroll-behavior: smooth;
-      white-space: nowrap;
-      padding: 1rem 0;
+    /* === Filter Bar & Controls === */
+    .filter-bar {
+        position: sticky;
+        top: 80px; /* Adjust if your navbar height is different */
+        background-color: #fff;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #ebebeb;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .filter-icons-section {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        overflow: hidden; /* This is important */
+    }
+
+    .filter-icons-wrapper {
+        display: flex;
+        gap: 1.8rem; /* A bit more gap */
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+        padding: 0.5rem 1rem;
+    }
+    .filter-icons-wrapper::-webkit-scrollbar {
+        display: none; /* Hide scrollbar */
     }
 
     .icon-item {
-      transition: transform 0.2s ease, color 0.2s ease;
-      cursor: pointer;
+        cursor: pointer;
+        color: #717171;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s ease;
+        white-space: nowrap;
     }
-
     .icon-item:hover {
-      transform: scale(1.1);
-      color: #000;
+        color: #000;
+        border-bottom-color: #ddd;
+    }
+    .icon-item.active {
+        color: #000;
+        font-weight: 600;
+        border-bottom-color: #000;
+    }
+    .icon-item i {
+        font-size: 1.2rem;
     }
 
-    .tax-info {
-      display: none;
-      color: gray;
-      font-size: 0.9rem;
+    .scroll-btn {
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        display: none; /* Hidden by default, JS will manage it */
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        flex-shrink: 0; /* Prevents button from shrinking */
     }
 
-    /* Custom Toggle Switch Styles */
-    .custom-toggle-container {
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 16px;
-      background-color: #f5f5f5;
-      border-radius: 25px;
-      border: 1px solid #ddd;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.3s;
+    .filter-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-left: 1rem;
+        flex-shrink: 0;
+    }
+    .btn-filters {
+        font-weight: 500;
+        border-radius: 8px;
     }
 
-    .custom-toggle-container:hover {
-      background-color: #e9e9e9;
+    /* === Tax Toggle Switch === */
+    .tax-toggle-box {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        gap: 0.75rem;
+    }
+    .tax-toggle-box .form-check-input:checked {
+        background-color: var(--brand-color);
+        border-color: var(--brand-color);
+    }
+    .tax-toggle-box .form-check-label {
+        font-size: 0.875rem;
     }
 
-    .custom-toggle-container input[type="checkbox"] {
-      display: none;
+
+    /* === Listing Card Styles === */
+    .listing-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: block;
     }
-
-    .custom-toggle-switch {
-      position: relative;
-      width: 40px;
-      height: 20px;
-      background-color: #ccc;
-      border-radius: 20px;
-      margin-left: 12px;
-      transition: background-color 0.3s;
+    .listing-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
     }
-
-    .custom-toggle-switch::before {
-      content: "";
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 16px;
-      height: 16px;
-      background-color: white;
-      border-radius: 50%;
-      transition: transform 0.3s;
+    .card-img-wrapper {
+        overflow: hidden;
+        border-radius: 1rem;
     }
-
-    input[type="checkbox"]:checked + .custom-toggle-switch {
-      background-color: #4caf50;
+    .card-img-top {
+        height: 18rem;
+        object-fit: cover;
+        transition: transform 0.4s ease;
     }
-
-    input[type="checkbox"]:checked + .custom-toggle-switch::before {
-      transform: translateX(20px);
+    .listing-card:hover .card-img-top {
+        transform: scale(1.05);
     }
-
-    .custom-label {
-      font-size: 14px;
-      color: #333;
+    .card-body { padding: 1rem; }
+    .tax-info { display: none; }
+    body.show-tax-info .tax-info {
+        display: inline;
+        font-size: 0.9rem;
+        color: #555;
     }
-  </style>
+</style>
 
-  <!-- Tax Toggle Script -->
-  <script>
-    const taxSwitch = document.getElementById('toggleTax');
-    const taxInfoElements = document.querySelectorAll('.tax-info');
+<body>
 
-    taxSwitch.addEventListener('change', () => {
-      taxInfoElements.forEach(el => {
-        el.style.display = taxSwitch.checked ? 'inline' : 'none';
-      });
-    });
-  </script>
+    <div class="filter-bar px-lg-5 px-3">
+        <div class="filter-icons-section">
+            <button class="scroll-btn me-2" id="scrollLeftBtn"><i class="fas fa-chevron-left"></i></button>
+            <div class="filter-icons-wrapper">
+                <div class="text-center icon-item active"><i class="fas fa-fire fa-lg mb-1"></i><br><small>Trending</small></div>
+                <div class="text-center icon-item"><i class="fas fa-swimming-pool fa-lg mb-1"></i><br><small>Pools</small></div>
+                <div class="text-center icon-item"><i class="fas fa-umbrella-beach fa-lg mb-1"></i><br><small>Beach</small></div>
+                <div class="text-center icon-item"><i class="fas fa-mountain fa-lg mb-1"></i><br><small>Views</small></div>
+                <div class="text-center icon-item"><i class="fas fa-city fa-lg mb-1"></i><br><small>Iconic cities</small></div>
+                <div class="text-center icon-item"><i class="fas fa-home fa-lg mb-1"></i><br><small>Cabins</small></div>
+                <div class="text-center icon-item"><i class="fas fa-water fa-lg mb-1"></i><br><small>Surfing</small></div>
+                <div class="text-center icon-item"><i class="fas fa-tree fa-lg mb-1"></i><br><small>Forest</small></div>
+                <div class="text-center icon-item"><i class="fas fa-snowflake fa-lg mb-1"></i><br><small>Winter</small></div>
+                <div class="text-center icon-item"><i class="fas fa-paw fa-lg mb-1"></i><br><small>Pets</small></div>
+                <div class="text-center icon-item"><i class="fas fa-campground fa-lg mb-1"></i><br><small>Camping</small></div>
+                <div class="text-center icon-item"><i class="fas fa-utensils fa-lg mb-1"></i><br><small>Foodie</small></div>
+                <div class="text-center icon-item"><i class="fas fa-biking fa-lg mb-1"></i><br><small>Adventure</small></div>
+                <div class="text-center icon-item"><i class="fas fa-briefcase fa-lg mb-1"></i><br><small>Work</small></div>
+                <div class="text-center icon-item"><i class="fas fa-heart fa-lg mb-1"></i><br><small>Romantic</small></div>
+                <div class="text-center icon-item"><i class="fas fa-skiing fa-lg mb-1"></i><br><small>Winter Sports</small></div>
+                <div class="text-center icon-item"><i class="fas fa-bath fa-lg mb-1"></i><br><small>Spas</small></div>
+                
+            </div>
+            <button class="scroll-btn ms-2" id="scrollRightBtn"><i class="fas fa-chevron-right"></i></button>
+        </div>
 
+        <div class="filter-controls">
+            <button class="btn btn-outline-dark btn-filters" data-bs-toggle="modal" data-bs-target="#filtersModal">
+                <i class="fas fa-filter"></i> Filters
+            </button>
+            <div class="tax-toggle-box d-none d-lg-flex">
+                <label class="form-check-label" for="toggleTax">Display with tax</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="toggleTax">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 row-cols-1 g-4">
+            <% for (let listing of listings) { %>
+                <div class="col">
+                    <a href="/listings/<%= listing._id %>" class="listing-card">
+                        <div class="card-img-wrapper">
+                             <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text mb-1">
+                                <strong><%= listing.title %></strong><br>
+                                <span class="price">&#8377;<%= listing.price?.toLocaleString("en-IN") %></span> / night
+                                <span class="tax-info"> +18% GST</span>
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="modal fade" id="filtersModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header">
+        <h5 class="modal-title">Filters</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body"><p>Your filter options would go here...</p></div><div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn" style="background-color: var(--brand-color); color: white;">Apply</button>
+    </div></div></div></div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Tax Toggle Logic ---
+            const taxSwitch = document.getElementById('toggleTax');
+            if (taxSwitch) {
+                taxSwitch.addEventListener('change', () => {
+                    document.body.classList.toggle('show-tax-info');
+                });
+            }
+
+            // --- Active State for Filter Icons ---
+            const iconItems = document.querySelectorAll('.icon-item');
+            iconItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelector('.icon-item.active')?.classList.remove('active');
+                    item.classList.add('active');
+                });
+            });
+
+            // --- Filter Bar Scroll Logic ---
+            const scrollWrapper = document.querySelector('.filter-icons-wrapper');
+            const leftBtn = document.getElementById('scrollLeftBtn');
+            const rightBtn = document.getElementById('scrollRightBtn');
+            
+            if (scrollWrapper && leftBtn && rightBtn) {
+                const handleScrollButtons = () => {
+                    // Check if there is overflow
+                    const isOverflowing = scrollWrapper.scrollWidth > scrollWrapper.clientWidth;
+                    if (!isOverflowing) {
+                        leftBtn.style.display = 'none';
+                        rightBtn.style.display = 'none';
+                        return;
+                    }
+
+                    // For screens larger than 992px, show buttons based on scroll position
+                    if (window.innerWidth >= 992) {
+                        const maxScrollLeft = scrollWrapper.scrollWidth - scrollWrapper.clientWidth;
+                        leftBtn.style.display = scrollWrapper.scrollLeft > 0 ? 'flex' : 'none';
+                        rightBtn.style.display = scrollWrapper.scrollLeft < maxScrollLeft - 1 ? 'flex' : 'none';
+                    } else {
+                        // Hide buttons on smaller screens
+                        leftBtn.style.display = 'none';
+                        rightBtn.style.display = 'none';
+                    }
+                };
+                
+                leftBtn.addEventListener('click', () => {
+                    scrollWrapper.scrollBy({ left: -350, behavior: 'smooth' });
+                });
+
+                rightBtn.addEventListener('click', () => {
+                    scrollWrapper.scrollBy({ left: 350, behavior: 'smooth' });
+                });
+
+                // Update buttons on scroll and resize
+                scrollWrapper.addEventListener('scroll', handleScrollButtons);
+                window.addEventListener('resize', handleScrollButtons);
+                
+                // Initial check
+                handleScrollButtons(); 
+            }
+        });
+    </script>
 </body>

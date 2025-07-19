@@ -1,35 +1,116 @@
 <% layout("layouts/boilerplate") %>
 
-<div class="row mt-4">
-  <div class="col-md-6 offset-md-3">
-    <h3 class="mb-3 text-center">Sign Up</h3>
-    <form action="/signup" method="POST" class="needs-validation" novalidate>
+<style>
+    .form-container {
+        padding: 3rem;
+        background-color: #ffffff;
+        border-radius: 1rem; /* 16px */
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f0f0f0;
+    }
+
+    .form-container .form-title {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-container .form-subtitle {
+        color: #6c757d; /* Bootstrap's text-secondary color */
+        margin-bottom: 2rem;
+    }
+    
+    /* Style for the modern floating labels */
+    .form-floating > .form-control {
+        border-radius: 0.75rem; /* 12px */
+    }
+
+    .form-floating > .form-control:focus {
+        border-color: #fe424d;
+        box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.15);
+    }
+    
+    /* Custom button with your brand's color */
+    .btn-brand {
+        background-color: #fe424d;
+        border-color: #fe424d;
+        color: #fff;
+        padding: 0.8rem;
+        font-weight: 500;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-brand:hover {
+        background-color: #e03a45;
+        border-color: #e03a45;
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(254, 66, 77, 0.3);
+    }
+
+    .login-link {
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+</style>
+
+<div class="row mt-5">
+  <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+    <div class="form-container">
+        
+      <h3 class="form-title text-center">Sign Up</h3>
+      <p class="form-subtitle text-center">Create your account to get started.</p>
       
-      <!-- Username -->
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input name="username" placeholder="Enter username" type="text" class="form-control" required />
-        <div class="invalid-feedback">Please enter a username.</div>
+      <form action="/signup" method="POST" class="needs-validation" novalidate>
+        
+        <div class="form-floating mb-3">
+          <input 
+            name="username" 
+            id="username"
+            placeholder="Enter username" 
+            type="text" 
+            class="form-control" 
+            required 
+          />
+          <label for="username">Username</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input 
+              name="email" 
+              id="email"
+              placeholder="Enter email" 
+              type="email" 
+              class="form-control" 
+              required 
+            />
+            <label for="email">Email</label>
+          </div>
+
+        <div class="form-floating mb-4">
+          <input 
+            id="password" 
+            name="password" 
+            placeholder="Enter password" 
+            type="password" 
+            class="form-control" 
+            required 
+          />
+          <label for="password">Password</label>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-brand">Sign Up</button>
+        </div>
+
+      </form>
+      
+      <div class="login-link">
+        <p class="text-muted">
+          Already have an account? <a href="/login" class="text-danger fw-bold text-decoration-none">Log In</a>
+        </p>
       </div>
 
-      <!-- Email -->
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input id="email" name="email" placeholder="Enter email" type="email" class="form-control" required />
-        <div class="invalid-feedback">Please enter a valid email.</div>
-      </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input id="password" name="password" placeholder="Enter password" type="password" class="form-control" required />
-        <div class="invalid-feedback">Please enter a password.</div>
-      </div>
-
-      <!-- Submit Button -->
-      <div class="d-grid">
-        <button type="submit" class="btn btn-success">Sign Up</button>
-      </div>
-
-    </form>
+    </div>
   </div>
 </div>

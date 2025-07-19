@@ -90,3 +90,31 @@ body {
   height: 400px;
   border-radius: 1rem;
 }
+
+/* Ensure navbar and toggler are visible on mobile */
+@media (max-width: 991.98px) {
+  .navbar {
+    height: auto;
+    min-height: 56px;
+  }
+  .navbar-collapse {
+    background: white;
+    padding: 1rem;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .navbar-toggler {
+    display: block;
+    z-index: 1051;
+  }
+  .navbar-toggler {
+    display: block !important;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    z-index: 1100;
+  }
+  .navbar-collapse {
+    width: 100%;
+  }
+}

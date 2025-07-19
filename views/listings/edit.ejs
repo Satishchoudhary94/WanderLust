@@ -1,60 +1,142 @@
 <% layout("layouts/boilerplate") %>
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card shadow p-4">
-        <h3 class="mb-4">Edit Your Listing</h3>
-        <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation" novalidate enctype="multipart/form-data">
+<style>
+    .form-card {
+        padding: 2.5rem;
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f0f0f0;
+    }
+    .form-card .form-title {
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+    .form-floating > .form-control {
+        border-radius: 0.75rem;
+    }
+    .form-floating > textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+    .form-floating > .form-control:focus {
+        border-color: #fe424d;
+        box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.15);
+    }
+    .form-file-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.75rem;
+        border: 1px solid #ced4da;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    .form-file-wrapper:hover {
+        border-color: #fe424d;
+        box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.15);
+    }
+    .form-file-label {
+        display: block;
+        padding: 0.8rem 1rem;
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+    .form-file-label i {
+        margin-right: 0.5rem;
+        color: #fe424d;
+    }
+    .form-file-input {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0; cursor: pointer;
+    }
+    .btn-brand {
+        background-color: #fe424d; border-color: #fe424d; color: #fff;
+        padding: 0.8rem; font-weight: 500; border-radius: 0.75rem;
+        transition: all 0.3s ease;
+    }
+    .btn-brand:hover {
+        background-color: #e03a45; border-color: #e03a45; color: #fff;
+        transform: translateY(-3px); box-shadow: 0 5px 15px rgba(254, 66, 77, 0.3);
+    }
+    .original-image-preview {
+        width: 150px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+    }
+</style>
 
-          <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input id="title" name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required />
-            <div class="invalid-feedback">Please enter a title.</div>
-          </div>
+<div class="row mt-5 mb-5">
+    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+        <div class="form-card">
+            <h3 class="form-title text-center">Edit Your Listing</h3>
+            <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation" novalidate enctype="multipart/form-data">
 
-          <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea id="description" name="listing[description]" class="form-control" required><%= listing.description %></textarea>
-            <div class="invalid-feedback">Please enter a description.</div>
-          </div>
+                <div class="form-floating mb-3">
+                    <input id="title" name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required />
+                    <label for="title">Title</label>
+                </div>
 
-          <!-- <div class="mb-3">
-            <label for="image" class="form-label">Image URL</label>
-            <input id="image" name="listing[image]" value="<%= listing.image.url %>" type="text" class="form-control" />
-          </div> -->
+                <div class="form-floating mb-3">
+                    <textarea id="description" name="listing[description]" class="form-control" required><%= listing.description %></textarea>
+                    <label for="description">Description</label>
+                </div>
 
-          <div class="mb-3">
-            <label for="image" class="form-label">Upload Image</label>
-            <input id="image" name="listing[image]"  type="file" class="form-control" />
-          </div>
+                <div class="mb-3">
+                    <label class="form-label">Original Image</label><br>
+                    <img src="<%= listing.image.url %>" class="original-image-preview" alt="Original Image">
+                </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Upload New Image</label>
+                    <div class="form-file-wrapper">
+                        <label for="image" class="form-file-label">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span id="file-name-display">Choose a new file...</span>
+                        </label>
+                        <input id="image" name="listing[image]" type="file" class="form-file-input"/>
+                    </div>
+                </div>
 
-          <div class="row mb-3">
-            <div class="col">
-              <label for="price" class="form-label">Price (₹)</label>
-              <input id="price" name="listing[price]" value="<%= listing.price %>" type="number" class="form-control" required />
-              <div class="invalid-feedback">Please enter a valid price.</div>
-            </div>
-            <div class="col">
-              <label for="country" class="form-label">Country</label>
-              <input id="country" name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required />
-              <div class="invalid-feedback">Please enter a country.</div>
-            </div>
-          </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input id="price" name="listing[price]" value="<%= listing.price %>" type="number" class="form-control" required />
+                            <label for="price">Price (₹)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input id="country" name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required />
+                            <label for="country">Country</label>
+                        </div>
+                    </div>
+                </div>
 
-          <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
-            <input id="location" name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required />
-            <div class="invalid-feedback">Please enter a location.</div>
-          </div>
+                <div class="form-floating mb-4">
+                    <input id="location" name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required />
+                    <label for="location">Location</label>
+                </div>
 
-          <div class="mb-3 text-end">
-            <button type="submit" class="btn add-btn">Update</button>
-          </div>
-
-        </form>
-      </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-brand">Save Changes</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
+
+<script>
+    const fileInput = document.getElementById('image');
+    const fileNameDisplay = document.getElementById('file-name-display');
+
+    fileInput.addEventListener('change', (event) => {
+        const fileName = event.target.files[0]?.name;
+        if (fileName) {
+            fileNameDisplay.textContent = fileName;
+        } else {
+            fileNameDisplay.textContent = 'Choose a new file...';
+        }
+    });
+</script>
