@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -5,6 +6,7 @@ const path = require('path');
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate'); 
 const Session = require('express-session'); 
+const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -15,7 +17,8 @@ const listingsRouter = require('./routes/listing.js');
 const userRouter = require('./routes/user.js');
 const ExpressError = require('./utils/ExpressError.js');
 
-const MONGO_URI = "mongodb://127.0.0.1:27017/WanderLust";
+// const MONGO_URI = "mongodb://127.0.0.1:27017/WanderLust";
+const MONGO_URI = process.env.ATLAS_URL;
 
 main().then(() => console.log('Connected to MongoDB'))
   .catch(err => console.log(err));  
@@ -31,7 +34,21 @@ app.use(methodOverride('_method'));
 app.engine('ejs', ejsMate);  
 app.use(express.static(path.join(__dirname, '/public')));
 
+
+
+const store = MongoStore.create({
+  mongoUrl: MONGO_URI,
+  crypto:{
+    secret: 'thisshouldbeabettersecret',
+  },
+  touchAfter: 24 * 3600, // time period in seconds
+});
+store.on('error', function(e) {
+  console.log('Session Store Error', e);
+});
+
 const sessionOptions = {
+  store: store,
   secret: 'thisshouldbeabettersecret',
   resave: false,
   saveUninitialized: true,
@@ -43,9 +60,9 @@ const sessionOptions = {
   }
 }
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!');  
-});
+
+
+
 
 app.use(Session(sessionOptions));
 app.use(flash());

@@ -85,6 +85,8 @@ body {
   border-color: #e43d3d !important;
 }
 
-
-
-
+#map { 
+  width: 80vh;
+  height: 400px;
+  border-radius: 1rem;
+}
